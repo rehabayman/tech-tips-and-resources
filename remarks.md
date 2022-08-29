@@ -8,6 +8,8 @@
         return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;     
     }
     ```
+2. Java supports covariant return types for overridden methods. This means an overridden method may have a more specific return type. That is, as long as the new return type is assignable to the return type of the method you are overriding, it's allowed. For reference check this [stack overflow answer](https://stackoverflow.com/a/14694885).
+3. Mehtod Signature: method name, parameter types and return type.
   
 ### Github
 1. Cherry Pick in Github: it is a command to pick some hash-specified commits to another branch
@@ -39,3 +41,12 @@
         1. Improves Code Readability & Maintainability
         2. Alternative to a View
         3. Overcome Statement Limitations – CTEs help overcome constraints such as SELECT statement limitations, for example, performing a GROUP BY using non-deterministic functions
+2. SQL SELECT statement always executes in this order: 
+    1. FROM
+    2. WHERE
+    3. GROUP BY
+    4. HAVING
+    5. SELECT
+    6. ORDER BY 
+
+    check this [learnsql article](https://learnsql.com/blog/getting-hang-group-clause/)
