@@ -50,3 +50,21 @@
     6. ORDER BY 
 
     check this [learnsql article](https://learnsql.com/blog/getting-hang-group-clause/)
+
+  
+### PostgreSql
+1. Creating a copy of a database: 
+    1. Disconnect all other users from the original database
+    ```
+    SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity 
+    WHERE pg_stat_activity.datname = 'originaldb' AND pid <> pg_backend_pid();
+    ```
+    2. Create the new DB
+    ```
+    CREATE DATABASE newdb WITH TEMPLATE originaldb OWNER dbuser;
+    ```
+
+2. Retrieve current value of sequence
+    ```
+    SELECT last_value FROM sequence_name;
+    ```
