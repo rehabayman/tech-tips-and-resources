@@ -10,6 +10,33 @@
     ```
 2. Java supports covariant return types for overridden methods. This means an overridden method may have a more specific return type. That is, as long as the new return type is assignable to the return type of the method you are overriding, it's allowed. For reference check this [stack overflow answer](https://stackoverflow.com/a/14694885).
 3. Mehtod Signature: method name, parameter types and return type.
+4. Access Modifiers in Java: [reference](https://www.tutorialspoint.com/java/java_access_modifiers.htm)
+    1. Default: visible to the package - no keyword is needed
+        - The fields in an interface are implicitly public static final and the methods in an interface are by default public
+    2. Private: can only be accessed within the declared class itself
+        - Classes and interfaces cannot be private
+        - Variables that are declared private can be accessed outside the class, if public getter methods are present in the class
+        - Using the private modifier is the main way that an object encapsulates itself and hides data from the outside world
+    3. Public: can be accessed from any other class
+        - if the public class we are trying to access is in a different package, then the public class still needs to be imported.
+    4. Protected: can be accessed only by the subclasses in other package or any class within the package of the protected members' class
+        - The protected access modifier cannot be applied to class and interfaces. Methods, fields can be declared protected, however methods and fields in a interface cannot be declared protected.
+        - Protected access gives the subclass a chance to use the helper method or variable, while preventing a nonrelated class from trying to use it.
+    5. Access Control and Inheritance
+        - Methods declared public in a superclass also must be public in all subclasses.
+        - Methods declared protected in a superclass must either be protected or public in subclasses; they cannot be private.
+        - Methods declared private are not inherited at all, so there is no rule for them.
+5. Non-Access Modifiers in Java: [reference](https://www.tutorialspoint.com/java/java_nonaccess_modifiers.htm)
+    1. Static: to create a class's variable or method
+    2. Abstract:
+        - Classes: If it is declared as abstract then the sole purpose is for the class to be extended. A class cannot be final and abstract at the same time.
+        - Methods: An abstract method is a method declared without any implementation. The methods body (implementation) is provided by the subclass. Abstract methods can never be final or strict.
+    3. Final:
+        - Variables: can be explicitly initialized only once. A reference variable declared final can never be reassigned to refer to an different object; used with static to make a class's constant.
+    4. Synchronized: used to indicate that a method can be accessed by only one thread at a time
+    5. Volatile: 
+        - The volatile modifier is used to let the JVM know that a thread accessing the variable must always merge its own private copy of the variable with the master copy in the memory.
+        - Accessing a volatile variable synchronizes all the cached copied of the variables in the main memory. Volatile can only be applied to instance variables, which are of type object or private. A volatile object reference can be null.
   
 ### Github
 1. Cherry Pick in Github: it is a command to pick some hash-specified commits to another branch
