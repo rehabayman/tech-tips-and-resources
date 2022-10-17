@@ -95,3 +95,14 @@
     ```
     SELECT last_value FROM sequence_name;
     ```
+
+## AWS
+1. Presigned URLs: used to share object in s3 bucket, which by default private.
+
+    1. The object owner can create a presigned URL, using their own security credentials, to grant time-limited permission to download the objects.
+
+    2. When a presigned URL is created for an object, you must provide your security credentials and then specify a bucket name, an object key, an HTTP method (GET to download the object), and an expiration date and time.
+
+    3. The presigned URLs are valid only for the specified duration. If a presigned URL is created using a temporary token, then the URL expires when the token expires, even if the URL was created with a later expiration time.
+
+    
