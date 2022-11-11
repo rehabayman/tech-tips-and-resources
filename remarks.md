@@ -69,15 +69,33 @@
         2. Alternative to a View
         3. Overcome Statement Limitations – CTEs help overcome constraints such as SELECT statement limitations, for example, performing a GROUP BY using non-deterministic functions
 2. SQL SELECT statement always executes in this order: 
-    1. FROM
+    1. FROM & JOINs
     2. WHERE
     3. GROUP BY
     4. HAVING
     5. SELECT
     6. ORDER BY 
+    7. Limit / Offset
 
-    check this [learnsql article](https://learnsql.com/blog/getting-hang-group-clause/)
+    check these [learnsql article](https://learnsql.com/blog/getting-hang-group-clause/), [sql bolt article](https://sqlbolt.com/lesson/select_queries_order_of_execution)
 
+3. Join Strategies: 
+    1. Nested Loop: [MS Docs](https://learn.microsoft.com/en-us/previous-versions/sql/sql-server-2008/ms191318(v=sql.100))
+        - What? The query optimizer selects one table as the outer (first) table and the other as the inner table. The outer table is scaned row by row. For each row, it also scans the inner table, looking for matching rows.
+        - When? This join type is very efficient if one of the tables is small (or has been filtered so that it has only a few qualifying rows) and if the other table has an index on the column that joins the tables. The optimizer typically chooses the small table as its first input because this is the fastest method of executing the nest-loop algorithm.
+        - Needs? For the nested-loop strategy to be effective, the inner table needs an index on the join column. 
+        - <b>PS</b>. if the join between the tables isn't based on equality, the optimizer chooses a nested-loop join, regardless of the tables' sizes and indexing schema
+    2. Merge Join:[MS Docs](https://learn.microsoft.com/en-us/previous-versions/sql/sql-server-2008/ms190967(v=sql.100))
+        - What? the Merge Join operator gets a row from each input and compares them
+        - When? If the two join inputs are not small but are sorted on their join column. Also, If both join inputs are large and the two inputs are of similar sizes, a <b>merge join with prior sorting</b> and a <b>hash</b> join offer similar performance.
+        - Needs? both inputs to be sorted on the merge columns, which are defined by the equality (ON) clauses of the join predicate.
+        - <b>PS</b>. Merge join itself is very fast, but it can be an expensive choice if sort operations are required. However, if the data volume is large and the desired data can be obtained presorted from existing B-tree indexes, merge join is often the fastest available join algorithm
+    3. Hash Join: [MS Docs](https://learn.microsoft.com/en-us/previous-versions/sql/sql-server-2008/ms189313(v=sql.100))
+        - What? The hash join has two inputs: the build input and probe input. The query optimizer assigns these roles so that the smaller of the two inputs is the build input. Hash joins are used for many types of set-matching.
+        - When? large, unsorted, nonindexed inputs. They are useful for intermediate results in complex queries
+        - Types:
+            - In-Memory Hash Join:
+                
   
 ### PostgreSql
 1. Creating a copy of a database: 
@@ -105,4 +123,17 @@
 
     3. The presigned URLs are valid only for the specified duration. If a presigned URL is created using a temporary token, then the URL expires when the token expires, even if the URL was created with a later expiration time.
 
+2. Messaging:
+
+    1. DLQ: Sometimes, a message keeps on failing from being processed. With a <b>Dead Letter Queue</b> it is possible to set a <b>maximum number of retries</b> for a message. When the message is not successfully processed within this maximum number, it will be moved to a DLQ. This is especially interesting for debugging purposes because the message is still available for further analysis.
+        - In order to activate this, it is necessary to create a new queue which will serve as a DLQ. 
+        - By means of a <b>redrive policy</b>, the DLQ can be linked to the original queue.
+        - Process:
+            - First, create the DLQ just like you did before with the regular queue.
+            - Next, you need to retrieve the ARN (Amazon Resource Name, a unique name within AWS) of the DLQ. This can be retrieved by means of a GetQueueAttributesResponse request.
+            - Next, specify the Redrive Policy with a maximum number of retries and the DLQ ARN. By means of a SetQueueAttributesRequest, the Redrive Policy is linked to the original queue. [resource](https://mydeveloperplanet.com/2021/11/23/how-to-use-amazon-sqs-in-a-spring-boot-app/)
+
     
+## PHP
+1. Sanitizing User Input:
+    - PHP filters are used to validate and sanitize external input. [check this w3schools article](https://www.w3schools.com/php/php_filter.asp)
