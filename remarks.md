@@ -37,6 +37,49 @@
     5. Volatile: 
         - The volatile modifier is used to let the JVM know that a thread accessing the variable must always merge its own private copy of the variable with the master copy in the memory.
         - Accessing a volatile variable synchronizes all the cached copied of the variables in the main memory. Volatile can only be applied to instance variables, which are of type object or private. A volatile object reference can be null.
+6. To convert a List to Set while maintaining order use LinkedHashSet as 
+
+    <em>it maintains a doubly-linked list running through all of its entries. This linked list defines the iteration ordering, which is the order in which elements were inserted into the set (insertion-order). Note that insertion order is not affected if an element is re-inserted into the set. (An element e is reinserted into a set s if s.add(e) is invoked when s.contains(e) would return true immediately prior to the invocation.)</em>
+[reference](https://stackoverflow.com/a/20095304)
+
+7. Diff between @Autowired and @Qualifier
+    - @Autowired: to autowire(or search) by-type.
+    - @Qualifier: [ref](https://stackoverflow.com/a/48134386)
+        - to autowire(or search) by-name.
+        - the annotation is used to resolve the autowiring conflict, when there are multiple beans of same type.
+        - can be used on any class annotated with @Component or on methods annotated with @Bean. This annotation can also be applied on constructor arguments or method parameters. 
+
+        [definition reference](https://stackoverflow.com/a/50829233)
+
+8. We can use @Scope("scope-name") on the component to make the return of the qualifier not the sigleton object but a new object every time I use the qualifier annotation
+
+9. Setting JVM timezone in spring boot app:
+    ```
+    @SpringBootApplication
+    public class Application {
+
+        @Value("${country.timezone}")
+        private String timeZone;
+
+        public static void main(final String[] args) {
+            SpringApplication.run(Application.class, args);
+        }
+
+        // this is how we change jvm timezone
+        @PostConstruct
+        public void init() {
+            TimeZone.setDefault(TimeZone.getTimeZone(this.timeZone));
+        }
+
+    }
+    ```
+10. Configuring hibernate to control timezone:
+    In the application.properties file use:
+    ```
+    spring.jpa.properties.hibernate.jdbc.time_zone=UTC
+    ```
+    This way Hibernate automatically translates the LocalDateTime from your application timezone (eg. GMT+2) into GMT (=UTC) when <b>communicating with the database</b>
+    
   
 ### Github
 1. Cherry Pick in Github: it is a command to pick some hash-specified commits to another branch
@@ -137,3 +180,19 @@
 ## PHP
 1. Sanitizing User Input:
     - PHP filters are used to validate and sanitize external input. [check this w3schools article](https://www.w3schools.com/php/php_filter.asp)
+
+## Laravel
+1. Options when creating a model
+
+    1. Create a migration with the model
+    ```
+    php artisan make:model <modelName> -m
+    ```
+    2. Create a resourcful controller with the model
+    ```
+    php artisan make:model <modelName> -mcr
+    ```
+    3. Specify this controller is API controller (generates only controller with 5 methods cuz APIs don't have create and edit forms)
+    ```
+    php artisan make:model <modelName> -mcr --api
+    ```
