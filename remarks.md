@@ -113,7 +113,7 @@
         <i>DataSourceTransactionManager supports this propagation out-of-the-box.</i>
 
 
-14. Generics: like templates in C++
+14. Generics: like templates in C++ <i>"To Be Continued"</i>
     - The <b>Object</b> is the superclass of all other classes, and Object reference can refer to any object. These features <b>lack type safety</b>. Generics add that type of safety feature.
     - Types:
         - Generic Method: Generic Java method takes a parameter and returns some value after performing a task.
@@ -238,6 +238,38 @@
     ```
     php artisan make:model <modelName> -mcr --api
     ```
+2. Delay a job or listener after a transaction is commited: [ref](https://arunas.dev/how-to-delay-laravel-jobs-and-listeners-within-database-transactions/)
+    1. Job: can use ```afterCommit``` method
+        ```
+        DB::transaction(function () use ($data) {
+            // Perform database queries here
+
+            dispatch(new MyJob($data))->afterCommit();
+            
+            // alternatively, if the job uses the Dispatchable trait:
+            // MyJob::dispatch($data)->afterCommit();
+
+            // Perform other operations that could potentially fail
+            // and roll back the transaction.
+        });
+        ```
+        ```
+        DB::transaction(function () use ($data) {
+            // Perform database queries here
+
+            DB::afterCommit(function () {
+                dispatch(new MyJob($data));
+            });
+
+            // Perform other operations that could potentially fail
+            // and roll back the transaction.
+        });
+        ```
+    2. Listener: can use ```$afterCommit``` property
+        ```
+        $afterCommit = true;
+        ```
+        - It does not matter whether the listener is synchronous or asynchronous
 ## Load Balancing:
 1. Load balancers (LB) are used to distribute the traffic among our application servers.
 2. LB performs health check on each server of our application servers to keep track of which servers to handle the new connection.
