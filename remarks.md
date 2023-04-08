@@ -51,9 +51,19 @@
 
         [definition reference](https://stackoverflow.com/a/50829233)
 
-8. We can use @Scope("scope-name") on the component to make the return of the qualifier not the sigleton object but a new object every time I use the qualifier annotation
+8. Supplier Interface: It represents a function which does not take in any argument but produces a value of type T.
+    - The lambda expression assigned to an object of Supplier type is used to define its get() which eventually produces a value
+    - The Supplier interface consists of only one function: get()
+    - Example:
+    ```
+    // This function returns a random value.
+    Supplier<Double> randomValue = () -> Math.random();
+    System.out.println(randomValue.get());
+    ```
 
-9. Setting JVM timezone in spring boot app:
+9. We can use @Scope("scope-name") on the component to make the return of the qualifier not the sigleton object but a new object every time I use the qualifier annotation
+
+10. Setting JVM timezone in spring boot app:
     ```
     @SpringBootApplication
     public class Application {
@@ -73,12 +83,40 @@
 
     }
     ```
-10. Configuring hibernate to control timezone:
+11. Configuring hibernate to control timezone:
     In the application.properties file use:
     ```
     spring.jpa.properties.hibernate.jdbc.time_zone=UTC
     ```
     This way Hibernate automatically translates the LocalDateTime from your application timezone (eg. GMT+2) into GMT (=UTC) when <b>communicating with the database</b>
+
+12. Converting a list of object to a map with a key and the value is the object itself
+    ```
+    employeeList.stream().collect(Collectors.toMap(Employee::getId, Function.identity()));
+    ```
+13. Transaction Propagation and Isolation in Spring (@Transactional): [reference](https://www.baeldung.com/spring-transactional-propagation-isolation)
+    - @Transactional allows us to set propagation, isolation, timeout, read-only, and rollback conditions for our transaction.
+    - We can put the annotation on definitions of interfaces (not recommended but acceptable in @Repository), classes, or directly on methods. They override each other according to the priority order; from lowest to highest we have: interface, superclass, class, interface method, superclass method, and class method.
+    - Spring applies the class-level annotation to all public methods of this class that we did not annotate with @Transactional. However, if we put the annotation on a private or protected method, Spring will ignore it without an error.
+    - Transaction Propagation types:
+        - REQUIRED is the default propagation. Spring checks if there is an active transaction, and if nothing exists, it creates a new one. Otherwise, the business logic appends to the currently active transaction.
+        - SUPPORTS, Spring first checks if an active transaction exists. If a transaction exists, then the existing transaction will be used. If there isn't a transaction, it is executed non-transactional
+        ```
+        @Transactional(propagation = Propagation.SUPPORTS)
+        ```
+        - MANDATORY, if there is an active transaction, then it will be used. If there isn't an active transaction, then Spring throws an exception
+        - NEVER propagation, Spring throws an exception if there's an active transaction
+        - NOT_SUPPORTED, If a current transaction exists, first Spring suspends it, and then the business logic is executed without a transaction
+        <i>The JTATransactionManager supports real transaction suspension out-of-the-box.</i>
+        - REQUIRES_NEW, Spring suspends the current transaction if it exists, and then creates a new one
+        - NESTED, if a transaction exists, it marks a save point. This means that if our business logic execution throws an exception, then the transaction rollbacks to this save point. If there's no active transaction, it works like REQUIRED.
+        <i>DataSourceTransactionManager supports this propagation out-of-the-box.</i>
+
+
+14. Generics: like templates in C++
+    - The <b>Object</b> is the superclass of all other classes, and Object reference can refer to any object. These features <b>lack type safety</b>. Generics add that type of safety feature.
+    - Types:
+        - Generic Method: Generic Java method takes a parameter and returns some value after performing a task.
     
   
 ### Github
@@ -175,6 +213,10 @@
             - First, create the DLQ just like you did before with the regular queue.
             - Next, you need to retrieve the ARN (Amazon Resource Name, a unique name within AWS) of the DLQ. This can be retrieved by means of a GetQueueAttributesResponse request.
             - Next, specify the Redrive Policy with a maximum number of retries and the DLQ ARN. By means of a SetQueueAttributesRequest, the Redrive Policy is linked to the original queue. [resource](https://mydeveloperplanet.com/2021/11/23/how-to-use-amazon-sqs-in-a-spring-boot-app/)
+    2. FIFO vs Standard Queues:
+        - Standard Queues: ensure that the messages are generally delivered in order but can be delivered out of order and more than once
+        due to high throughput
+        - FIFO Queues: ensure that the messages are delivered only once and in order
 
     
 ## PHP
@@ -196,3 +238,13 @@
     ```
     php artisan make:model <modelName> -mcr --api
     ```
+## Load Balancing:
+1. Load balancers (LB) are used to distribute the traffic among our application servers.
+2. LB performs health check on each server of our application servers to keep track of which servers to handle the new connection.
+3. LB use a range of algorithms to handle this distribution, like:
+    - Round Robin: connections are distributed sequentially
+    - Weighted Round Robin: builds on the RR algorithm. The admin assigns a weight to each server so that it can be taken into consideration when assigning a connection to a server.
+    - Least Connections: dynamic algorithm which monitors the server with the least active connections to direct the new connections to it.
+    - Least Time: calculates the response time of each server using a formula that combines the fastest response and the fewest active connections and directs the new connection to the server with the least response time.
+    - Source IP Hash: combines the source IP and the destination IP to generate a hash key to allocate a server to this connection. Useful when the client should connect to the same server after the connection is broken.
+    
