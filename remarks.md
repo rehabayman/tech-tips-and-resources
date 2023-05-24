@@ -30,16 +30,16 @@
     1. Static: to create a class's variable or method
     2. Abstract:
         - Classes: If it is declared as abstract then the sole purpose is for the class to be extended. A class cannot be final and abstract at the same time.
-        - Methods: An abstract method is a method declared without any implementation. The methods body (implementation) is provided by the subclass. Abstract methods can never be final or strict.
+        - Methods: An abstract method is a method declared without any implementation. Abstract methods can never be final or strict.
     3. Final:
-        - Variables: can be explicitly initialized only once. A reference variable declared final can never be reassigned to refer to an different object; used with static to make a class's constant.
+        - Variables: can be explicitly initialized only once. Used with static to make a class's constant.
     4. Synchronized: used to indicate that a method can be accessed by only one thread at a time
     5. Volatile: 
         - The volatile modifier is used to let the JVM know that a thread accessing the variable must always merge its own private copy of the variable with the master copy in the memory.
         - Accessing a volatile variable synchronizes all the cached copied of the variables in the main memory. Volatile can only be applied to instance variables, which are of type object or private. A volatile object reference can be null.
 6. To convert a List to Set while maintaining order use LinkedHashSet as 
 
-    <em>it maintains a doubly-linked list running through all of its entries. This linked list defines the iteration ordering, which is the order in which elements were inserted into the set (insertion-order). Note that insertion order is not affected if an element is re-inserted into the set. (An element e is reinserted into a set s if s.add(e) is invoked when s.contains(e) would return true immediately prior to the invocation.)</em>
+    <em>it maintains a doubly-linked list running through all of its entries. This linked list defines the iteration ordering, which is the insertion-order. Note that insertion order is not affected if an element is re-inserted into the set. (An element e is reinserted into a set s if s.add(e) is invoked when s.contains(e) would return true immediately prior to the invocation.)</em>
 [reference](https://stackoverflow.com/a/20095304)
 
 7. Diff between @Autowired and @Qualifier
@@ -112,11 +112,21 @@
         - NESTED, if a transaction exists, it marks a save point. This means that if our business logic execution throws an exception, then the transaction rollbacks to this save point. If there's no active transaction, it works like REQUIRED.
         <i>DataSourceTransactionManager supports this propagation out-of-the-box.</i>
 
+14. Caching in SpringBoot:
+    - First Level Cache
+        - associated with the Session object.
+        - Hibernate first level cache is enabled by default and there is no way to disable it.
+    - Second Level Cache
+        - disabled by default but we can enable it through configuration.
+    - Query Level Cache
+        - it caches only identifier values and results of value type.
+        - it should always be used in conjunction with the second-level cache.
 
-14. Generics: like templates in C++ <i>"To Be Continued"</i>
+
+15. Generics: like templates in C++ <i>"To Be Continued"</i>
     - The <b>Object</b> is the superclass of all other classes, and Object reference can refer to any object. These features <b>lack type safety</b>. Generics add that type of safety feature.
     - Types:
-        - Generic Method: Generic Java method takes a parameter and returns some value after performing a task.
+        - Generic Method: It is exactly like a normal function, however, a generic method has type parameters that are cited by actual type. The compiler takes care of the type safety which enables programmers to code easily since they do not have to perform long, individual type castings.
     
   
 ### Github
@@ -176,7 +186,18 @@
         - When? large, unsorted, nonindexed inputs. They are useful for intermediate results in complex queries
         - Types:
             - In-Memory Hash Join:
-                
+
+4. UNNEST function:
+    - The UNNEST function takes an ARRAY and returns a table with a row for each element in the ARRAY.
+    - Syntax:
+        ```
+            UNNEST(ARRAY) [WITH OFFSET]
+
+            -- example
+            SELECT * 
+            FROM UNNEST([1, 2, 2, 5, NULL]) AS unnest_column WITH OFFSET AS `offset`
+        ```
+    - [reference](https://count.co/sql-resources/bigquery-standard-sql/unnest)
   
 ### PostgreSql
 1. Creating a copy of a database: 
@@ -194,29 +215,6 @@
     ```
     SELECT last_value FROM sequence_name;
     ```
-
-## AWS
-1. Presigned URLs: used to share object in s3 bucket, which by default private.
-
-    1. The object owner can create a presigned URL, using their own security credentials, to grant time-limited permission to download the objects.
-
-    2. When a presigned URL is created for an object, you must provide your security credentials and then specify a bucket name, an object key, an HTTP method (GET to download the object), and an expiration date and time.
-
-    3. The presigned URLs are valid only for the specified duration. If a presigned URL is created using a temporary token, then the URL expires when the token expires, even if the URL was created with a later expiration time.
-
-2. Messaging:
-
-    1. DLQ: Sometimes, a message keeps on failing from being processed. With a <b>Dead Letter Queue</b> it is possible to set a <b>maximum number of retries</b> for a message. When the message is not successfully processed within this maximum number, it will be moved to a DLQ. This is especially interesting for debugging purposes because the message is still available for further analysis.
-        - In order to activate this, it is necessary to create a new queue which will serve as a DLQ. 
-        - By means of a <b>redrive policy</b>, the DLQ can be linked to the original queue.
-        - Process:
-            - First, create the DLQ just like you did before with the regular queue.
-            - Next, you need to retrieve the ARN (Amazon Resource Name, a unique name within AWS) of the DLQ. This can be retrieved by means of a GetQueueAttributesResponse request.
-            - Next, specify the Redrive Policy with a maximum number of retries and the DLQ ARN. By means of a SetQueueAttributesRequest, the Redrive Policy is linked to the original queue. [resource](https://mydeveloperplanet.com/2021/11/23/how-to-use-amazon-sqs-in-a-spring-boot-app/)
-    2. FIFO vs Standard Queues:
-        - Standard Queues: ensure that the messages are generally delivered in order but can be delivered out of order and more than once
-        due to high throughput
-        - FIFO Queues: ensure that the messages are delivered only once and in order
 
     
 ## PHP
@@ -270,13 +268,3 @@
         $afterCommit = true;
         ```
         - It does not matter whether the listener is synchronous or asynchronous
-## Load Balancing:
-1. Load balancers (LB) are used to distribute the traffic among our application servers.
-2. LB performs health check on each server of our application servers to keep track of which servers to handle the new connection.
-3. LB use a range of algorithms to handle this distribution, like:
-    - Round Robin: connections are distributed sequentially
-    - Weighted Round Robin: builds on the RR algorithm. The admin assigns a weight to each server so that it can be taken into consideration when assigning a connection to a server.
-    - Least Connections: dynamic algorithm which monitors the server with the least active connections to direct the new connections to it.
-    - Least Time: calculates the response time of each server using a formula that combines the fastest response and the fewest active connections and directs the new connection to the server with the least response time.
-    - Source IP Hash: combines the source IP and the destination IP to generate a hash key to allocate a server to this connection. Useful when the client should connect to the same server after the connection is broken.
-    
