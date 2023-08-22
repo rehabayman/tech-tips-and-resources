@@ -20,6 +20,15 @@
         - Standard Queues: ensure that the messages are generally delivered in order but can be delivered out of order and more than once
         due to high throughput
         - FIFO Queues: ensure that the messages are delivered only once and in order
+    3. How to list all / purge all messages on an sqs locally
+        ```
+        ## For listing
+        aws sqs receive-message --endpoint-url=http://localhost:9324 --queue-url http://localhost:9324/000000000000/queue-name --attribute-names All --message-attribute-names All --max-number-of-messages 10
+        ```
+        ```
+        ## For purging
+        aws sqs purge-queue --endpoint-url=http://localhost:9324 --queue-url http://localhost:9324/000000000000/queue-name 
+        ```
 
 ## Load Balancing:
 1. Load balancers (LB) are used to distribute the traffic among our application servers.

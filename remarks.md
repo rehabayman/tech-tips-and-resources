@@ -9,19 +9,15 @@
     }
     ```
 2. Java supports covariant return types for overridden methods. This means an overridden method may have a more specific return type. That is, as long as the new return type is assignable to the return type of the method you are overriding, it's allowed. For reference check this [stack overflow answer](https://stackoverflow.com/a/14694885).
-3. Mehtod Signature: method name, parameter types and return type.
+3. Mehtod Signature: method name & parameter list (types & number).
+    - can have 2 functions with the same name, different parameters' list and different return types.
 4. Access Modifiers in Java: [reference](https://www.tutorialspoint.com/java/java_access_modifiers.htm)
     1. Default: visible to the package - no keyword is needed
         - The fields in an interface are implicitly public static final and the methods in an interface are by default public
     2. Private: can only be accessed within the declared class itself
-        - Classes and interfaces cannot be private
-        - Variables that are declared private can be accessed outside the class, if public getter methods are present in the class
-        - Using the private modifier is the main way that an object encapsulates itself and hides data from the outside world
+        - Classes and interfaces cannot be private <b>Excepet for inner classes, they can be private static</b>
     3. Public: can be accessed from any other class
-        - if the public class we are trying to access is in a different package, then the public class still needs to be imported.
     4. Protected: can be accessed only by the subclasses in other package or any class within the package of the protected members' class
-        - The protected access modifier cannot be applied to class and interfaces. Methods, fields can be declared protected, however methods and fields in a interface cannot be declared protected.
-        - Protected access gives the subclass a chance to use the helper method or variable, while preventing a nonrelated class from trying to use it.
     5. Access Control and Inheritance
         - Methods declared public in a superclass also must be public in all subclasses.
         - Methods declared protected in a superclass must either be protected or public in subclasses; they cannot be private.
@@ -61,7 +57,7 @@
     System.out.println(randomValue.get());
     ```
 
-9. We can use @Scope("scope-name") on the component to make the return of the qualifier not the sigleton object but a new object every time I use the qualifier annotation
+9. We can use @Scope("prototype") on the component to make the return of the qualifier not the sigleton object but a new object every time I use the qualifier annotation <i>---> needs revist</i>
 
 10. Setting JVM timezone in spring boot app:
     ```
@@ -112,11 +108,12 @@
         - NESTED, if a transaction exists, it marks a save point. This means that if our business logic execution throws an exception, then the transaction rollbacks to this save point. If there's no active transaction, it works like REQUIRED.
         <i>DataSourceTransactionManager supports this propagation out-of-the-box.</i>
 
-14. Caching in SpringBoot:
+14. Caching in Hibernate:
     - First Level Cache
         - associated with the Session object.
         - Hibernate first level cache is enabled by default and there is no way to disable it.
-    - Second Level Cache
+    - Second Level Cache [[Hazelcast]](https://hazelcast.com/glossary/hibernate-second-level-cache/)
+        - shares cached data across sessions, so all sessions/users can benefit from the cached data, even for data that was inserted by another session, and even if the session that inserted the data into the second-level cache closes
         - disabled by default but we can enable it through configuration.
     - Query Level Cache
         - it caches only identifier values and results of value type.
@@ -190,7 +187,7 @@
 4. UNNEST function:
     - The UNNEST function takes an ARRAY and returns a table with a row for each element in the ARRAY.
     - Syntax:
-        ```
+        ```sql
             UNNEST(ARRAY) [WITH OFFSET]
 
             -- example
@@ -202,19 +199,49 @@
 ### PostgreSql
 1. Creating a copy of a database: 
     1. Disconnect all other users from the original database
-    ```
+    ```sql
     SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity 
     WHERE pg_stat_activity.datname = 'originaldb' AND pid <> pg_backend_pid();
     ```
     2. Create the new DB
-    ```
+    ```sql
     CREATE DATABASE newdb WITH TEMPLATE originaldb OWNER dbuser;
     ```
 
 2. Retrieve current value of sequence
-    ```
+    ```sql
     SELECT last_value FROM sequence_name;
     ```
+
+3. Indexes in PostgreSql: [Docs](https://www.postgresql.org/docs/current/indexes-types.html)
+    1. Create an index:
+        ```sql
+        CREATE INDEX (name_of_index) on (name_of_table) USING (index_type) (name_of_column(s));
+        ```
+    2. Types: B-Tree, Hash, GIN, BRIN, SP-GiST & GiST.
+        - B-Tree:
+            - The query planner will consider using this index whenever an indexed column is involved in a comparison using one of these operators:
+                ```
+                <   <=   =   >=   >
+                ```
+            - Other operators: 
+                - BETWEEN and IN
+                - IS NULL or IS NOT NULL
+                - LIKE and ~ <i>if the pattern is a constant and is anchored to the beginning of the string — for example, col LIKE 'foo%' or col ~ '^foo', but not col LIKE '%bar'</i>
+                - ILIKE and ~*, but only if the pattern starts with characters that are not affected by upper/lower case conversion.
+            - B-tree indexes can also be used to retrieve data in sorted order. This is not always faster than a simple scan and sort, but it is often helpful.
+        - Hash:
+            - Stores a 32-bit hash code derived from the value of the indexed column.
+            - Can only handle simple equality comparisons (= operator)
+        - GIN:
+            - inverted indexes which are appropriate for data values that contain multiple component values, such as arrays
+            - An inverted index contains a separate entry for each component value, and can efficiently handle queries that test for the presence of specific component values.
+            - The standard distribution of PostgreSQL includes a GIN operator class for arrays, which supports indexed queries using these operators:
+                ```
+                <@   @>   =   &&
+                ```
+
+    
 
     
 ## PHP
