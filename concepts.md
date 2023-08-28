@@ -9,3 +9,39 @@
 2. Deadlocks: <br>
         A deadlock occurs when two threads each lock a different variable at the same time and then try to lock the variable that the other thread already locked. As a result, each thread stops executing and waits for the other thread to release the variable. Because each thread is holding the variable that the other thread wants, nothing occurs, and the threads remain deadlocked.
 - [ref on the diff between deadlock and race condition](https://learn.microsoft.com/en-US/troubleshoot/developer/visualstudio/visual-basic/language-compilers/race-conditions-deadlocks)
+
+## Multithreading (Java)
+1. Enhance this snippet of code
+```Java
+public class Test  {
+   private static Test instance;
+   private Test (){}
+   public synchronized static getInstance() {
+        if (instance == null) {
+           instance = new Test();
+        }
+        return instance;
+   }
+}
+
+// Enhanced Code
+public class Test  {
+   private static volatile Test instance;
+   private Test (){}
+   public static getInstance() {
+        /**
+         * we added this if statement outside the synchronized
+         * block here to make the code concurrent 
+         * and that all threads won't be blocked waiting
+         **/ 
+        if (instance == null) {
+           synchronized {
+              if (instance == null) { 
+                instance = new Test();
+              }
+            }
+        }
+        return instance;
+   }
+}
+```

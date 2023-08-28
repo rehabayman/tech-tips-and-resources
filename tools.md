@@ -76,3 +76,17 @@
     mvn site
     -- generate a maven site
 ```
+
+## JUnit
+1. To create a parametrized test
+    ```Java
+    @ParameterizedTest
+    @ValueSource(longs = {1, 2, 3})
+    void orderCountBetweenMinAndMax_returnTrue(final long orderCount) {
+        /**
+         * logic goes here that uses the orderCount
+         * that changes between 1, 2 & 3 
+         * ** these are the values in the ValueSource **
+        */
+    }
+    ```
