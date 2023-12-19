@@ -45,3 +45,26 @@ public class Test  {
    }
 }
 ```
+
+## Web Security
+1. SOP, CORS & CSRF: [ref](https://maddevs.io/blog/web-security-an-overview-of-sop-cors-and-csrf/)
+   - Websites that use the same scheme, hostname, and port have the same origin
+   - SOP (Same Origin Policy): The policy rule suggests that if both websites have the same source, then scripts on one website can only get data from another.
+   - CORS (Cross-Origin Resource Sharing): is a mechanism that allows requesting restricted resources from outside the domain of a web page.
+      - CORS requests can be divided into simple and preflighted. Simple requests are considered “safe”
+         - CORS list of safe methods: HEAD, GET & POST
+      - <b>CORS doesn’t block simple requests but blocks reading the response body</b>
+      - The browser sends a <b>Preflight</b> request to understand what (non-simple/unsafe) requests the source allows with these headers
+         ```
+         Request Method: OPTIONS
+         Access-Control-Request-Method: DELETE
+         ```
+         - The browser expects one or more of the following HTTP headers:
+         ```
+         Access-Control-Allow-Origin (authorized sources)
+         Access-Control-Allow-Methods (allowed methods)
+         Access-Control-Allow-Headers (allowed headers)
+         Access-Control-Allow-Credentials (true/false, do need to pass cookies).
+         ```
+         - <b>Complex requests CORS first checks and then decides to block or allow them.</b>
+   - CSRF (Cross-Site Request Forgery):  is a web attack that exploits loopholes in the SOP policy, and CORS does not block them. The attack consists of the attacker running malicious scripts in the victim's browser, and thus the victim performs unintended actions on his behalf.

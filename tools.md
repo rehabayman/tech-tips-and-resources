@@ -90,3 +90,13 @@
         */
     }
     ```
+
+## Mockito
+1. Argument Matchers:
+    - When we want to mock the behavior for any argument of the given type, in that case, we can use Mockito argument matchers.
+    - When we use argument matchers, then all the arguments should use matchers.
+    - ```eq()```: If we want to use a specific value for an argument, then we can use eq() method
+    - ```argThat(callbackFn)```: Lets you create advanced argument matchers that run a function on passed arguments, and checks if the function returns true.
+
+## Hazelcast
+1. [Hazelcast](https://www.baeldung.com/java-hazelcast#Hazelcast) is a distributed In-Memory Data Grid platform for Java. The architecture supports high scalability and data distribution in a clustered environment. It supports the auto-discovery of nodes and intelligent synchronization.
