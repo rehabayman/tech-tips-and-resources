@@ -7,6 +7,9 @@ They are a mix of new and well-known remarks but I preferred to document them be
 
 1. Remarks on tech topics: [remarks.md](https://github.com/rehabayman/tech-tips-and-resources/blob/master/remarks.md)
 2. Remarks on tech tools: [tools.md](https://github.com/rehabayman/tech-tips-and-resources/blob/master/tools.md)
+3. Tech Concepts: [concepts.md](https://github.com/rehabayman/tech-tips-and-resources/blob/master/concepts.md)
+4. Good Links to read: [good_reads.md](https://github.com/rehabayman/tech-tips-and-resources/blob/master/good_reads.md)
+5. Tech Tips: [tips.md](https://github.com/rehabayman/tech-tips-and-resources/blob/master/tips.md)
 
 ## Contributions
 I truely appreciate feedback, so if you find anything that needs revision or new thing that you think it will be helpful for sharing go ahead and open a PR :wink:
